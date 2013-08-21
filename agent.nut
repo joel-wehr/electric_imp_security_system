@@ -23,7 +23,7 @@ smsArmed <- "off";
 sirenArmed <- "off";
 sirenState <- "off";
 sensorState <- "unset";
-apiKey <- "1"    // Enter your API Key here
+apiKey <- ""    // Enter your API Key here
 // Respond to incoming HTTP commands
 http.onrequest(function(request, response) { 
   try {
