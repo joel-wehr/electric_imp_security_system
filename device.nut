@@ -1,15 +1,15 @@
 //Home Security System
 // Set local variables
+
 smsArmed <- "off";
 sirenArmed <- "off";
 sirenState <- "off";
-sensorState <- "unset";
 pinAState <- 0;
 pinBState <- 0;
 pinCState <- 0;
 pinDState <- 0;
 pinEState <- 0;
-
+sensorState <- "unset";
 // Set up the functions
 function soundSiren() {
     hardware.pin1.write(1);
@@ -154,7 +154,7 @@ agent.on ("setStatus", function(data) {
     else if (sirenState == "off") {
         hardware.pin1.write(0);
     }
-    local json = "{ \"status\" : { \"smsArmed\" : \"" + smsArmed + "\" , \"sirenArmed\" : \"" + sirenArmed + "\" , \"sirenState\" : \"" + sirenState + "\", \"sensorState\" : \"" + sensorState + "\" }}";
+    local json = "{ \"status\" : { \"auth\" : \"yes\" , \"smsArmed\" : \"" + smsArmed + "\" , \"sirenArmed\" : \"" + sirenArmed + "\" , \"sirenState\" : \"" + sirenState + "\", \"sensorState\" : \"" + sensorState + "\" }}";
     server.log(json);
     agent.send("statusResponse", json);
 });
