@@ -23,29 +23,38 @@ smsArmed <- "off";
 sirenArmed <- "off";
 sirenState <- "off";
 sensorState <- "unset";
+apiKey <- "1"    // Enter your API Key here
 // Respond to incoming HTTP commands
 http.onrequest(function(request, response) { 
   try {
     local data = http.jsondecode(request.body);
     server.log(request.body);
-    if (data.action == "get") {
-        local json = "{ \"status\" : { \"smsArmed\" : \"" + smsArmed + "\" , \"sirenArmed\" : \"" + sirenArmed + "\" , \"sirenState\" : \"" + sirenState + "\" , \"sensorState\" : \"" + sensorState + "\" }}";
-        response.send(200, json);      
-    } 
-    else if (data.action == "set") {
-        server.log(data);
-        smsArmed = (data.smsArmed);
-        sirenArmed = (data.sirenArmed);
-        sirenState = (data.sirenState);
-        device.send("setStatus", data);
-        device.on("statusResponse", function(data) {
-        response.send(200, data);
-        });       
+    if ("api-key" in request.headers && request.headers["api-key"] == apiKey) {
+        server.log(request.headers["api-key"]);
+        if (data.action == "get") {
+            local json = "{ \"status\" : { \"auth\" : \"yes\", \"smsArmed\" : \"" + smsArmed + "\" , \"sirenArmed\" : \"" + sirenArmed + "\" , \"sirenState\" : \"" + sirenState + "\" , \"sensorState\" : \"" + sensorState + "\" }}";
+            response.send(200, json);      
+        } 
+        else if (data.action == "set") {
+            server.log(data);
+            smsArmed = (data.smsArmed);
+            sirenArmed = (data.sirenArmed);
+            sirenState = (data.sirenState);
+            device.send("setStatus", data);
+            device.on("statusResponse", function(data) {
+            response.send(200, data);
+            });       
+        }
+        else {
+            server.log(request.body);
+            response.send(500, "Missing Data in Body");
+        }
     }
-   else {
-       server.log(request.body);
-        response.send(500, "Missing Data in Body");
-   }     
+    else {
+        local json = "{ \"status\" : { \"auth\" : \"no\" }}";
+        response.send(401, json)  
+        send_sms(TWILIO_TO_NUMBER, "Unauthorized access to Security System attempted.")
+    }
   }
   catch (ex) {
     response.send(500, "Internal Server Error: " + ex);
