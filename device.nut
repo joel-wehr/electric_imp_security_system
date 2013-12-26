@@ -169,7 +169,5 @@ hardware.pinC.configure(DIGITAL_IN_PULLUP, pinCchanged);
 hardware.pinD.configure(DIGITAL_IN_PULLUP, pinDchanged);
 hardware.pinE.configure(DIGITAL_IN_PULLUP, pinEchanged);
 
-// Register with the server
-imp.configure("Home Security System", [], []);
 server.log("Home Security System Online");
 server.log(checkSensorState());
